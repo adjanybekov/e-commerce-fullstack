@@ -4,6 +4,7 @@ import { bookService } from "../../../services/bookService";
 export const ShopBook = (props) => {
   const [books, setBooks] = useState([]);
   const [cartBooks, setCartBooks] = useState([]);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     getBooks();
@@ -11,6 +12,7 @@ export const ShopBook = (props) => {
   }, []);
 
   function getBooks() {
+    setVisible(false);
     bookService.getBooks().then((res) => {
       console.log(res.data);
       let books = [];
@@ -21,6 +23,7 @@ export const ShopBook = (props) => {
         books.push(book);
       });
       setBooks(books);
+      setVisible(true);
     });
     // setAddVisible(false);
     // setViewVisible(false);
@@ -129,41 +132,45 @@ export const ShopBook = (props) => {
       <hr />
       <hr />
 
-      <div className="container row">
-        {books.map((book) => {
-          return (
-            <div className="col-md-4">
-              <div className="card card-block">
-                <img
-                  className="custom-image-style"
-                  height="300"
-                  width="200"
-                  src={book.picByte}
-                  style={{ marginLeft: "60px", marginTop: "10px" }}
-                />
-                <div className="book-desc-container row">
-                  <div>
-                    <p style={{ marginLeft: "60px" }}>
-                      <strong>
-                        {book.name}: ${book.price}
-                      </strong>
-                    </p>
-                    <p style={{ marginLeft: "60px" }}>{book.author}</p>
-                  </div>
-                  <div className="offset-md-4 col-md-4">
-                    <button
-                      className="btn btn-primary btn-sm"
-                      onClick={() => addToCart(book.id)}
-                    >
-                      Add To Cart
-                    </button>
+      {!visible ? (
+        <div>Loading...</div>
+      ) : (
+        <div className="container row">
+          {books.map((book) => {
+            return (
+              <div className="col-md-4">
+                <div className="card card-block">
+                  <img
+                    className="custom-image-style"
+                    height="300"
+                    width="200"
+                    src={book.picByte}
+                    style={{ marginLeft: "60px", marginTop: "10px" }}
+                  />
+                  <div className="book-desc-container row">
+                    <div>
+                      <p style={{ marginLeft: "60px" }}>
+                        <strong>
+                          {book.name}: ${book.price}
+                        </strong>
+                      </p>
+                      <p style={{ marginLeft: "60px" }}>{book.author}</p>
+                    </div>
+                    <div className="offset-md-4 col-md-4">
+                      <button
+                        className="btn btn-primary btn-sm"
+                        onClick={() => addToCart(book.id)}
+                      >
+                        Add To Cart
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 };
